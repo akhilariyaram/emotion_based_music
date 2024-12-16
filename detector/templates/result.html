@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Predicted Emotion: {{ emotion }}</h1>
+        <a href="/">Upload another image</a>
+        <br>
+        <h2>Recommended Songs:</h2>
+        <div class="song-list">
+            {% for song_id in song_links %}
+            <iframe style="border-radius:20px; margin-bottom: 10px;" 
+            
+            src="https://open.spotify.com/embed/track/{{ song_id }}?utm_source=generator&autoplay=1" 
+            width="900"
+            height="180" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy">
+    </iframe>
+            {% endfor %}
+        </div>
+        
+    </div>
+</body>
+</html>

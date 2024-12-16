@@ -1,0 +1,35 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <title>Live Detection</title>
+  </head>
+  <body>
+  
+      
+
+    <div class="container">
+      <h1>Predicted Mood:{{ mood }}</h1>
+      <a href="/">Upload another image</a>
+      <br>
+      <h2>Recommended Songs:</h2>
+        {% for song_id in songs %}
+        <iframe style="border-radius:20px; margin-bottom: 10px;" 
+            
+            src="https://open.spotify.com/embed/track/{{ song_id }}?utm_source=generator&autoplay=1" 
+            width="900"
+            height="180" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy">
+    </iframe>
+        {% endfor %}
+      </div>
+  </body>
+</html>
