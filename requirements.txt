@@ -1,0 +1,7 @@
+Django
+tensorflow
+numpy
+pandas
+opencv-python
+opencv-contrib-python
+Pillow
