@@ -19,17 +19,57 @@
         }
         #songList {
             margin-top: 20px;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center;     /* Center the content vertically */
+            flex-direction: column;  /* Stack the songs vertically */
+            gap: 20px;               /* Add some space between the iframes */
+            height: 100%;            /* Make sure the container takes up the full height */
+        }
+
+        /* Canvas overlay styling */
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none; /* To make sure the canvas doesn't block video interaction */
+        }
+        /* Resize video */
+        #video {
+            width: 480px;  /* Decrease the video width */
+            height: 360px; /* Decrease the video height */
+        }
+
+        /* Dropdown styling */
+        select {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 16px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Live Emotion Detection</h1>
-        <video id="video" width="340" height="300" autoplay></video>
+        <div style="position: relative; display: inline-block;">
+            <video id="video" width="480" height="360" autoplay></video>
+            <canvas id="overlay" width="480" height="360"></canvas>
+        </div>
         <div>
             <button id="startDetection">Start Detection</button>
             <button id="stopDetection">Stop Detection</button>
         </div>
+
+        <!-- Dropdown for language selection -->
+        <div>
+            <select id="languageSelect">
+                <option value="all">All Languages</option>
+                <option value="telugu">Telugu</option>
+                <option value="tamil">Tamil</option>
+            </select>
+        </div>
+
         <div id="emotionDisplay"></div>
         <div id="songList"></div>
     </div>
@@ -38,98 +78,160 @@
         const video = document.getElementById('video');
         const songList = document.getElementById('songList');
         const emotionDisplay = document.getElementById('emotionDisplay');
-    
-        // Access the camera
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            })
-            .catch(err => {
-                console.error("Error accessing camera: ", err);
-            });
-    
-        document.getElementById('startDetection').addEventListener('click', () => {
+        const overlayCanvas = document.getElementById('overlay');
+        const overlayContext = overlayCanvas.getContext('2d');
+        const languageSelect = document.getElementById('languageSelect');
+      
+        let intervalId = null; // Declare intervalId globally to manage it properly
+      
+        // Function to start the camera
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    console.error("Error accessing camera: ", err);
+                    emotionDisplay.innerHTML = 'Unable to access camera.';
+                });
+        }
+      
+        // Function to stop the camera
+        function stopCamera() {
+            const stream = video.srcObject;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null; // Clear the video stream
+            }
+        }
+      
+        // Function to send image for emotion detection
+        function sendImageForEmotionDetection() {
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             const context = canvas.getContext('2d');
-    
-            // Function to send the image and process response
-            const sendImageForEmotionDetection = () => {
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-                // Send image data to the backend for emotion detection
-                canvas.toBlob(blob => {
-                    const formData = new FormData();
-                    formData.append('image', blob, 'capture.jpg');
-    
-                    fetch('/detect-emotion/', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}'  // Ensure this is rendered correctly
-                        }
-                    })
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+            // Send image data to the backend for emotion detection
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('image', blob, 'capture.jpg');
+      
+                fetch('/detect-emotion/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}' // Ensure this is rendered correctly
+                    }
+                })
                     .then(response => {
                         if (!response.ok) {
-                            console.error('Network response was not ok:', response);
                             throw new Error('Network response was not ok');
                         }
                         return response.json();
                     })
                     .then(data => {
-                        console.log('Received data:', data); // Debugging log
                         // Display detected emotion
-                        if (data.emotion) {
-                            emotionDisplay.innerHTML = `Detected Emotion: ${data.emotion}`;
-                        } else {
-                            console.error('Emotion not found in response:', data);
-                            emotionDisplay.innerHTML = 'Emotion not detected.';
-                        }
-    
-                        // Clear previous song list
-                        songList.innerHTML = '';
-    
-                        // Check if song_links exist in the response
+                        emotionDisplay.innerHTML = data.emotion
+                            ? `Detected Emotion: ${data.emotion}`
+                            : 'Emotion not detected.';
+      
+                        // Display song list
+                        songList.innerHTML = ''; // Clear previous song list
                         if (data.song_links) {
                             data.song_links.forEach(song_id => {
                                 const iframe = document.createElement('iframe');
                                 iframe.style.borderRadius = '20px';
                                 iframe.style.marginBottom = '10px';
                                 iframe.src = `https://open.spotify.com/embed/track/${song_id}?utm_source=generator&autoplay=1`;
-                                iframe.height="180";
-                                iframe.width="900";
+                                iframe.height = "180";
+                                iframe.width = "900";
                                 iframe.allowFullscreen = true;
-                                iframe.allow = "autoplay; encrypted-media";  // Ensure autoplay is allowed
-                                iframe.style.border = 'none';  // Remove outline box
+                                iframe.allow = "autoplay; encrypted-media";
+                                iframe.style.border = 'none';
                                 songList.appendChild(iframe);
                             });
                         } else {
-                            console.error('No song links returned:', data);
                             songList.innerHTML = 'No songs available for this emotion.';
                         }
+      
+                        // Draw the emotion text on the overlay
+                        if (data.emotion) {
+                            overlayContext.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height); // Clear previous drawings
+                            overlayContext.fillStyle = "red"; // Set the text color to red
+                            overlayContext.font = "30px Arial"; // Set the font size and style
+                            overlayContext.fillText(data.emotion, 10, 40); // Draw the emotion text at the top-left corner
+                        }
+    
+                        // After displaying the emotion and songs, update the songs based on the selected language
+                        updateSongListBasedOnLanguage();
                     })
                     .catch(error => {
                         console.error('Error fetching data:', error);
                     });
-                });
-            };
-    
-            // Send the first image immediately
-            sendImageForEmotionDetection();
-    
-            // Capture and send image every 3 minutes (180,000 milliseconds)
-            const intervalId = setInterval(sendImageForEmotionDetection, 180000); // 180000 milliseconds = 3 minutes
-    
-            // Optional: Stop detection button
-            document.getElementById('stopDetection').addEventListener('click', () => {
-                clearInterval(intervalId);
-                video.srcObject.getTracks().forEach(track => track.stop()); // Stop the video stream
-                emotionDisplay.innerHTML = 'Detection stopped.';
             });
+        }
+      
+        // Function to update the song list based on the selected language
+        function updateSongListBasedOnLanguage() {
+            const selectedLanguage = languageSelect.value;
+    
+            // Filter songs based on selected language
+            fetch(`/filter-songs/?language=${selectedLanguage}`)
+                .then(response => response.json())
+                .then(data => {
+                    songList.innerHTML = ''; // Clear previous song list
+                    if (data.song_links) {
+                        data.song_links.forEach(song_id => {
+                            const iframe = document.createElement('iframe');
+                            iframe.style.borderRadius = '20px';
+                            iframe.style.marginBottom = '10px';
+                            iframe.src = `https://open.spotify.com/embed/track/${song_id}?utm_source=generator&autoplay=1`;
+                            iframe.height = "180";
+                            iframe.width = "900";
+                            iframe.allowFullscreen = true;
+                            iframe.allow = "autoplay; encrypted-media";
+                            iframe.style.border = 'none';
+                            songList.appendChild(iframe);
+                        });
+                    } else {
+                        songList.innerHTML = 'No songs available.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching filtered songs:', error);
+                });
+        }
+      
+        // Event listener for "Start Detection"
+        document.getElementById('startDetection').addEventListener('click', () => {
+            if (!video.srcObject) {
+                startCamera(); // Restart the camera if it's not active
+            }
+      
+            // Send the first image after a 10-second delay
+            setTimeout(() => {
+                sendImageForEmotionDetection();
+                // Then start capturing at intervals of 10 seconds
+                intervalId = setInterval(sendImageForEmotionDetection, 10000);
+            }, 10000);
+        });
+      
+        // Event listener for "Stop Detection"
+        document.getElementById('stopDetection').addEventListener('click', () => {
+            clearInterval(intervalId); // Stop periodic emotion detection
+            stopCamera(); // Stop the camera
+            emotionDisplay.innerHTML = 'Detection stopped.';
+            overlayContext.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height); // Clear any rectangles
+        });
+      
+        // Event listener for language selection change
+        languageSelect.addEventListener('change', () => {
+            // After the language selection change, update the song list based on the new language
+            updateSongListBasedOnLanguage();
         });
     </script>
-    
     
 </body>
 </html>

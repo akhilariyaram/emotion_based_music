@@ -14,7 +14,13 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+FACADEPATH=BASE_DIR / 'detector/haarcascade_frontalface_default.xml'
+MODEL_PATH = BASE_DIR / 'detector/face_emotion.h5'
+CSV_PATH = BASE_DIR / 'detector/musicData.csv'
+CSV=BASE_DIR / 'detector/ClassifiedData.csv'
+STATIC_PATH = BASE_DIR / 'static/captured_image.jpg'
+TEMPLATESPATH=BASE_DIR / "detector/templates"
+STATICFILESPATH=BASE_DIR / "emotion_based_music/static"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -54,7 +60,7 @@ ROOT_URLCONF = 'emotion_based_music.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [r'D:\\emotion_based_music\\detector\\templates'],
+        'DIRS': [TEMPLATESPATH],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,7 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [r'D://emotion_based_music//emotion_based_music//static']
+STATICFILES_DIRS = [STATICFILESPATH]
 
 
 # Default primary key field type

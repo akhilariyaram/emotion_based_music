@@ -4,99 +4,194 @@ import pandas as pd
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from django.shortcuts import render
-
-def live_emotion_detection(request):
-    return render(request, 'live_detection.html')
-import json
+from tensorflow.keras.preprocessing.image import img_to_array
 from django.http import JsonResponse
+import cv2
+from django.conf import settings
 
-def detect_emotion(request):
-    if request.method == 'POST' and request.FILES.get('image'):
-        uploaded_file = request.FILES['image']
-        fs = FileSystemStorage()
-        filename = fs.save(uploaded_file.name, uploaded_file)
-        file_path = fs.path(filename)
-        
-        # Preprocess and predict
-        img = preprocess_image(file_path)
-        pred = model.predict(img)
-        pred_label = label[pred.argmax()]
-        
-        # Map the detected emotion to music label
-        music_label = emotion_mapping.get(pred_label, 'Chill')  # Default to 'Chill' if not found
-
-        # Get random songs for the mapped music label
-        filtered_songs = music_df[music_df['label'] == music_label]
-        print(f"Filtered songs for label '{music_label}':", filtered_songs)  # Debugging line
-
-        if filtered_songs.empty:
-            return JsonResponse({'error': 'No songs found for the detected emotion'}, status=404)
-
-        song_links = filtered_songs.sample(n=5)['id'].tolist()
-        print(f"Song links: {song_links}")  # Debugging line
-
-        return JsonResponse({'emotion': pred_label, 'song_links': song_links})
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-
-# Load your emotion detection model
-model = load_model("emotiondetector.h5")
-
-# Label mapping
+# Load the model and data
+model = load_model(settings.MODEL_PATH)
 label = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
-
-# Load music data
-#music_data_path = r'D:\\emotion_based_music\\detector\\Updated_ClassifiedMusicData.csv' # Update this path
 music_data_path = r"D:\\emotion_based_music\\detector\\ClassifiedMusicData.csv"
-music_df = pd.read_csv(music_data_path)
+music_df = pd.read_csv(settings.CSV)
 
-# Emotion mapping
+# Emotion to music mapping
 emotion_mapping = {
     'happy': 'Cheerful',
     'sad': 'Chill',
     'angry': 'Energetic',
     'fear': 'Chill',
     'surprise': 'Cheerful',
-    'neutral': 'Chill',
-    'disgust': 'Chill',
+    'neutral': 'Romantic',
+    'disgust': 'Cheerful',
 }
 
+# Preprocessing function to detect faces
 def preprocess_image(image_path):
-    img = load_img(image_path, color_mode='grayscale', target_size=(48, 48))
-    feature = img_to_array(img)
-    feature = feature.reshape(1, 48, 48, 1)
-    return feature / 255.0
+    facecasc = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    image = cv2.imread(image_path)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    if image.shape[:2] == (48, 48):
+        print("Input image is already 48x48.")
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        feature = img_to_array(gray).reshape(1, 48, 48, 1) / 255.0
+        return feature
+    
+    # Detect faces
+    faces = facecasc.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=10)
+    print("No of faces:", len(faces))
 
+    if len(faces) == 0:
+        # If no faces are detected, return None
+        return None
+
+    preprocessed_faces = []
+    for (x, y, w, h) in faces:
+        # Draw rectangle around each face
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        
+        # Crop and preprocess each detected face
+        roi_gray = gray[y:y + h, x:x + w]
+        roi_gray_resized = cv2.resize(roi_gray, (48, 48))
+        feature = img_to_array(roi_gray_resized)
+        feature = feature.reshape(1, 48, 48, 1) / 255.0
+        preprocessed_faces.append(feature)
+
+    return preprocessed_faces[0]
+
+# View function to upload image and process emotion detection
 def upload_image(request):
     if request.method == 'POST' and request.FILES['image']:
         uploaded_file = request.FILES['image']
         fs = FileSystemStorage()
-        filename = fs.save(uploaded_file.name, uploaded_file)
-        file_path = fs.path(filename)
+
+        # Save the image with a fixed name to always overwrite the file
+        filename = "uploaded_image.jpg"  # Fixed name for the uploaded image
+        file_path = fs.location + '/' + filename
+
+        # Check if the file already exists and remove it
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        # Save the new uploaded image with the same name
+        fs.save(filename, uploaded_file)  # This saves the file to a directory with the same name
         
-        # Preprocess and predict
         img = preprocess_image(file_path)
+
+        if img is None:
+            # If no faces are detected, return Chill music and an appropriate message
+            pred_label = 'neutral'  # Default emotion if no face is detected
+            music_label = 'Chill'   # Default label for Chill music
+            filtered_songs = music_df[music_df['label'] == music_label]
+
+            # Shuffle the filtered songs and select the top 35 random songs
+            random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+
+
+            song_links = random_songs['id'].tolist()  # Get the song links from the random selection
+
+            return render(request, 'result.html', {
+                'emotion': 'No faces detected (poor image quality)',  # Display message
+                'image_path': fs.url(filename),
+                'song_links': song_links,
+                'label': music_label
+            })
+        
+        # If faces are detected, proceed with emotion prediction
         pred = model.predict(img)
         pred_label = label[pred.argmax()]
         
-        # Map the detected emotion to music label
-        music_label = emotion_mapping.get(pred_label, 'Chill')  # Default to 'Chill' if not found
+        music_label = emotion_mapping.get(pred_label, 'Chill')
 
-        # Get 5 random songs for the mapped music label
-        filtered_songs = music_df[music_df['label'] == music_label].sample(n=25)
+        filtered_songs = music_df[music_df['label'] == music_label]
+        random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
 
-        # Create a list of song links (assuming you have a column with URLs)
-        song_links = filtered_songs['id'].tolist()  # Ensure this corresponds to your DataFrame
-
+        song_links = random_songs['id'].head(35).tolist()  # Limit to the first 35 songs
+        
         return render(request, 'result.html', {
             'emotion': pred_label,
             'image_path': fs.url(filename),
-            'song_links': song_links  # Use 'song_links' for your template
+            'song_links': song_links,
+            'label': music_label
         })
 
     return render(request, 'upload.html')
 
+# View function for live emotion detection (if needed in the future)
+def live_emotion_detection(request):
+    return render(request, 'live_detection.html')
+
+# Endpoint for detecting emotion from the uploaded image and returning song links
+def detect_emotion(request):
+    if request.method == 'POST' and request.FILES.get('image'):
+        uploaded_file = request.FILES['image']
+        fs = FileSystemStorage()
+
+        # Fixed filename to always save the file with the same name
+        filename = "uploaded_image.jpg"  # Fixed name for the uploaded image
+        file_path = fs.location + '/' + filename
+
+        # Check if the file already exists and remove it
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        # Save the new uploaded image with the same name
+        fs.save(filename, uploaded_file)  # This saves the file to a directory with the same name
+        
+        img = preprocess_image(file_path)
+
+        if img is None:
+            # If no faces are detected, return default Chill music and no emotion
+            pred_label = 'neutral'
+            music_label = 'Chill'
+
+            filtered_songs = music_df[music_df['label'] == music_label]
+            if filtered_songs.empty:
+                return JsonResponse({'error': 'No songs found for the detected emotion'}, status=404)
+
+            random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+
+            song_links = random_songs['id'].head(35).tolist()  # Limit to the first 35 songs
+
+            return JsonResponse({'emotion': 'No faces detected', 'song_links': song_links})
+        
+        # Predict emotion if faces are detected
+        pred = model.predict(img)
+        pred_label = label[pred.argmax()]
+        
+        music_label = emotion_mapping.get(pred_label, 'Chill')
+
+        filtered_songs = music_df[music_df['label'] == music_label]
+        if filtered_songs.empty:
+            return JsonResponse({'error': 'No songs found for the detected emotion'}, status=404)
+
+        random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+
+        song_links = random_songs['id'].head(35).tolist()  # Limit to the first 35 songs
+
+        return JsonResponse({'emotion': pred_label, 'song_links': song_links})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# Filter songs by language
+def filter_songs(request):
+    if request.method == 'GET':
+        # Get the selected language from the request
+        language = request.GET.get('language', 'all').lower()
+
+        # Filter songs based on the selected language
+        if language == 'telugu':
+            filtered_songs = music_df[music_df['language'] == 'Telugu']
+        elif language == 'tamil':
+            filtered_songs = music_df[music_df['language'] == 'Tamil']
+        else:  # Default case: all songs
+            filtered_songs = music_df
+
+        random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+
+        song_links = random_songs['id'].head(35).tolist()
+
+        return JsonResponse({'song_links': song_links})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
