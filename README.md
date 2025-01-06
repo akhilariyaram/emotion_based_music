@@ -1,6 +1,6 @@
 Install the requirements
 ```bash
-pip install numpy pandas django tensorflow opencv-python pillow keras
+pip install numpy=1.23.5 pandas=1.5.3 django=4.2.9 tensorflow=2.14.0 opencv-python=4.7.0.72 keras=2.14.0
 ```
 To run the Django project
 ```bash
