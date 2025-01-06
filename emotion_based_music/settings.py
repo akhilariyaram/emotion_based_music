@@ -15,7 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 FACADEPATH=BASE_DIR / 'detector/haarcascade_frontalface_default.xml'
-MODEL_PATH = BASE_DIR / 'detector/face_emotion.h5'
+MODEL_PATH = BASE_DIR / 'detector/model.h5'
 CSV_PATH = BASE_DIR / 'detector/musicData.csv'
 CSV=BASE_DIR / 'detector/ClassifiedData.csv'
 STATIC_PATH = BASE_DIR / 'static/captured_image.jpg'

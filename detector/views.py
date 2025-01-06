@@ -9,9 +9,8 @@ from django.http import JsonResponse
 import cv2
 from django.conf import settings
 
-# Load the model and data
-model = load_model(settings.MODEL_PATH)
-label = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
+model=load_model(settings.MODEL_PATH)
+label = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']
 music_data_path = r"D:\\emotion_based_music\\detector\\ClassifiedMusicData.csv"
 music_df = pd.read_csv(settings.CSV)
 
@@ -30,37 +29,39 @@ emotion_mapping = {
 def preprocess_image(image_path):
     facecasc = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     image = cv2.imread(image_path)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     
-    if image.shape[:2] == (48, 48):
+    if image is None:
+        print("Error: Image not loaded. Check the file path.")
+        return None
+
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    if image.shape == (48, 48):
         print("Input image is already 48x48.")
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         feature = img_to_array(gray).reshape(1, 48, 48, 1) / 255.0
         return feature
-    
-    # Detect faces
-    faces = facecasc.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=10)
-    print("No of faces:", len(faces))
+
+    elif len(image.shape) == 2:
+        feature = img_to_array(gray).reshape(1, 48, 48, 1) / 255.0
+        return feature
+
+    faces = facecasc.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=3, minSize=(30, 30))
 
     if len(faces) == 0:
-        # If no faces are detected, return None
+        print("No faces detected.")
         return None
 
     preprocessed_faces = []
     for (x, y, w, h) in faces:
-        # Draw rectangle around each face
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        
-        # Crop and preprocess each detected face
         roi_gray = gray[y:y + h, x:x + w]
-        roi_gray_resized = cv2.resize(roi_gray, (48, 48))
-        feature = img_to_array(roi_gray_resized)
-        feature = feature.reshape(1, 48, 48, 1) / 255.0
-        preprocessed_faces.append(feature)
+        resized_face = cv2.resize(roi_gray, (48, 48))
+        normalized_face = resized_face / 255.0
+        input_image = np.expand_dims(np.expand_dims(normalized_face, -1), 0)
+        preprocessed_faces.append(input_image)
 
     return preprocessed_faces[0]
 
-# View function to upload image and process emotion detection
+
 def upload_image(request):
     if request.method == 'POST' and request.FILES['image']:
         uploaded_file = request.FILES['image']
@@ -68,15 +69,15 @@ def upload_image(request):
 
         # Save the image with a fixed name to always overwrite the file
         filename = "uploaded_image.jpg"  # Fixed name for the uploaded image
+        t=r"D:\Projects\aztask\emotion_based_music\emotion_based_music\static"+'/'+filename
         file_path = fs.location + '/' + filename
-
-        # Check if the file already exists and remove it
         if os.path.exists(file_path):
             os.remove(file_path)
-
+        if os.path.exists(t):
+            os.remove(t)
         # Save the new uploaded image with the same name
         fs.save(filename, uploaded_file)  # This saves the file to a directory with the same name
-        
+        fs.save(t,uploaded_file)
         img = preprocess_image(file_path)
 
         if img is None:
@@ -100,10 +101,9 @@ def upload_image(request):
         
         # If faces are detected, proceed with emotion prediction
         pred = model.predict(img)
-        pred_label = label[pred.argmax()]
         
+        pred_label = label[pred.argmax()]
         music_label = emotion_mapping.get(pred_label, 'Chill')
-
         filtered_songs = music_df[music_df['label'] == music_label]
         random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
 
@@ -111,7 +111,7 @@ def upload_image(request):
         
         return render(request, 'result.html', {
             'emotion': pred_label,
-            'image_path': fs.url(filename),
+            'image_path': t,
             'song_links': song_links,
             'label': music_label
         })

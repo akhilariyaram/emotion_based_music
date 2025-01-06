@@ -6,11 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Result</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style> select {
+        padding: 10px;
+        margin-top: 20px;
+        font-size: 16px;
+        border-radius: 5px;
+    }</style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Predicted Emotion: {{ emotion }}</h1>
+        <img src="{% static 'uploaded_image.jpg' %}" alt="Image">
+
         <h1>Emotion Label: {{ label }}</h1>
         <a href="/">Upload another image</a>
         <br>
