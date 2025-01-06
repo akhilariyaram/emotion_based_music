@@ -1,6 +1,4 @@
-###Datasets Used: 
-##FER2013,CK+ DATASET for image detection
-##spotify data for music categorization
+
 
 Install the requirements
 ```bash
