@@ -1,4 +1,21 @@
+# Emotion-Based Music Recommendation System 🎵😊
 
+This project integrates **emotion detection** with **music recommendation** to provide personalized song suggestions based on your mood. It uses facial emotion recognition and categorized Spotify data to recommend songs tailored to the detected emotions.
+
+---
+
+## Datasets Used:
+- **FER2013** and **CK+ Dataset**: For image-based emotion detection.
+- **Spotify Data**: For categorizing music into emotional categories.
+
+---
+
+## Installation
+
+### Step 1: Clone the Repository
+```bash
+git clone <repository_url>
+cd <repository_name>
 
 Install the requirements
 ```bash
