@@ -1,0 +1,416 @@
+/* Spotify-like styling */
+/* Reset Styles */
+/* Ensure the record stays in the background */
+#home .container {
+    z-index: 0; /* Send it to the background */
+}
+#right-section-imp {
+    position: absolute;
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 28px;
+    font-weight: bold;
+    color: #1db954; /* Cool green shade */
+    font-family: 'Poppins', sans-serif;
+    width: 40%;
+    text-align: right; /* Ensures text aligns to the right */
+}
+#live-detection {
+    position: relative; /* This makes sure absolute positioning inside works correctly */
+}
+
+/* Blinking cursor effect */
+#animated-text-imp::after {
+    content: "|";
+    display: inline-block;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.right-section {
+    position: absolute;
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 28px;
+    font-weight: bold;
+    color: #1db954; /* Cool green shade */
+    font-family: 'Poppins', sans-serif;
+    width: 40%;
+}
+
+/* Blinking cursor effect */
+#animated-text::after {
+    content: "|";
+    display: inline-block;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+
+#record {
+    z-index: 10; /* Keep the record above everything */
+}
+.upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Space between elements */
+    width: 100%;
+}
+.custom-file-upload {
+    background: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #1db954; /* Green border */
+    text-align: center;
+    font-weight: bold;
+    width: 200px; /* Fixed width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease, transform 0.2s ease;
+    color: #1db954; /* Green text color */
+}
+
+/* Hide default file input */
+.custom-file-upload input[type="file"] {
+    display: none;
+}
+.upload-box input[type="file"] {
+    background: white;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    width: 80%; /* Adjust width */
+    text-align: center;
+}
+
+.upload-box button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    background: #1db954; /* Spotify green */
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    width: 200px;
+    text-align: center;
+}
+
+/* Hover effects */
+.custom-file-upload:hover {
+    background: #f0f0f0;
+    transform: scale(1.05);
+}
+.upload-box button:hover {
+    background: #17a34a;
+    transform: scale(1.1);
+}
+#record {
+    width: 250px;
+    height: 250px;
+    position: fixed;
+    top: 50%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    animation: spin 5s linear infinite;
+    transition: left 1s ease-in-out, top 1s ease-in-out;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    z-index: 1; /* Keeps it behind other elements */
+}
+
+/* Containers that hold buttons */
+.container {
+    position: absolute;
+    top: 50%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Ensures it's above the record */
+    padding: 20px; /* Extra spacing */
+}
+
+/* Move left and right sections slightly to avoid overlapping */
+.left {
+    left: 22%; /* Slightly adjusted */
+}
+
+.right {
+    left: 78%; /* Slightly adjusted */
+}
+
+/* Buttons inside containers */
+.container button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    background: #1db954; /* Spotify green */
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    z-index: 15; /* Ensure buttons are above the record */
+}
+
+.container button:hover {
+    background: #17a34a;
+    transform: scale(1.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #1e1e1e, #121212); /* Spotify-like gradient */
+    color: white;
+    scroll-behavior: smooth;
+}
+
+/* Navigation */
+nav {
+    background: rgba(18, 18, 18, 0.9); /* Semi-transparent black */
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    backdrop-filter: blur(10px); /* Blur effect */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-right: 20px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #1db954; /* Spotify green */
+}
+
+/* Sections */
+section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+#home { background: linear-gradient(135deg, #1e1e1e, #121212); }
+#image-detection { background: linear-gradient(135deg, #2c2c2c, #121212); }
+#live-detection { background: linear-gradient(135deg, #3a3a3a, #121212); }
+#about { background: linear-gradient(135deg, #484848, #121212); }
+
+/* Smooth-Edged Square Containers */
+.container {
+    position: absolute;
+    top: 50%;
+    width: 300px; /* Larger container */
+    height: 300px; /* Larger container */
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 20px; /* Smooth edges */
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px); /* Blur effect */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.left {
+    left: 25%; /* Middle of the left half */
+}
+
+.right {
+    left: 75%; /* Middle of the right half */
+}
+
+/* Spinning Record */
+
+
+/* Continuous Spinning Animation */
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.image-text-container {
+    position: absolute;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff6b6b; /* A modern red-pink shade */
+    font-family: 'Poppins', sans-serif;
+    width: 40%;
+    text-align: left;
+}
+
+
+/* Blinking cursor effect for image detection text */
+#image-detection-text::after {
+    content: " ";
+    display: inline-block;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+/* Typing Effect Styling */
+.blinking-cursor::after {
+    content: "|";
+    display: inline-block;
+    margin-left: 2px;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.detection-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between the button and the detection text */
+}
+
+.container.left {
+    flex: 1;
+}
+
+#live-detection-section {
+    flex: 2;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    text-align: center;
+}
+
+.image-text-container-imp {
+    position: absolute;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff6b6b; /* A modern red-pink shade */
+    font-family: 'Poppins', sans-serif;
+    width: 40%;
+    text-align: left;
+}
+
+
+/* Blinking cursor effect for image detection text */
+#image-detection-text-imp::after {
+    content: " ";
+    display: inline-block;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+/* Typing Effect Styling */
+.blinking-cursor::after {
+    content: "|";
+    display: inline-block;
+    margin-left: 2px;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

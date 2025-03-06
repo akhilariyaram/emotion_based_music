@@ -16,13 +16,13 @@ music_df = pd.read_csv(settings.CSV)
 
 # Emotion to music mapping
 emotion_mapping = {
-    'happy': 'Cheerful',
-    'sad': 'Chill',
-    'angry': 'Energetic',
-    'fear': 'Chill',
-    'surprise': 'Cheerful',
-    'neutral': 'Romantic',
-    'disgust': 'Cheerful',
+    'happy': 'Happy',
+    'sad': 'Sad',
+    'angry': 'Angry',
+    'fear': 'Fear',
+    'surprise': 'Surprised',
+    'neutral': 'Neutral',
+    'disgust': 'Disgust',
 }
 
 # Preprocessing function to detect faces
@@ -83,7 +83,7 @@ def upload_image(request):
         if img is None:
             # If no faces are detected, return Chill music and an appropriate message
             pred_label = 'neutral'  # Default emotion if no face is detected
-            music_label = 'Chill'   # Default label for Chill music
+            music_label = 'Happy'   # Default label for Chill music
             filtered_songs = music_df[music_df['label'] == music_label]
 
             # Shuffle the filtered songs and select the top 35 random songs
@@ -103,7 +103,7 @@ def upload_image(request):
         pred = model.predict(img)
         
         pred_label = label[pred.argmax()]
-        music_label = emotion_mapping.get(pred_label, 'Chill')
+        music_label = emotion_mapping.get(pred_label, 'Happy')
         filtered_songs = music_df[music_df['label'] == music_label]
         random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
 
@@ -144,7 +144,7 @@ def detect_emotion(request):
         if img is None:
             # If no faces are detected, return default Chill music and no emotion
             pred_label = 'neutral'
-            music_label = 'Chill'
+            music_label = 'Happy'
 
             filtered_songs = music_df[music_df['label'] == music_label]
             if filtered_songs.empty:
@@ -160,7 +160,7 @@ def detect_emotion(request):
         pred = model.predict(img)
         pred_label = label[pred.argmax()]
         
-        music_label = emotion_mapping.get(pred_label, 'Chill')
+        music_label = emotion_mapping.get(pred_label, 'Happy')
 
         filtered_songs = music_df[music_df['label'] == music_label]
         if filtered_songs.empty:
@@ -175,23 +175,21 @@ def detect_emotion(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 # Filter songs by language
+from django.http import JsonResponse
+
 def filter_songs(request):
-    if request.method == 'GET':
-        # Get the selected language from the request
-        language = request.GET.get('language', 'all').lower()
+    language = request.GET.get('language', 'all')
+    
+    if language == 'all':
+        filtered_songs = music_df[music_df['language'].str.lower().isin(['telugu', 'english', 'tamil'])]
 
-        # Filter songs based on the selected language
-        if language == 'telugu':
-            filtered_songs = music_df[music_df['language'] == 'Telugu']
-        elif language == 'tamil':
-            filtered_songs = music_df[music_df['language'] == 'Tamil']
-        else:  # Default case: all songs
-            filtered_songs = music_df
+    else:
+        filtered_songs = music_df[music_df['language'].str.lower() == language.lower()]
+    
+    if filtered_songs.empty:
+        return JsonResponse({'song_links': []})
 
-        random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+    random_songs = filtered_songs.sample(n=10)  # Adjust number as needed
+    song_links = random_songs['id'].tolist()
 
-        song_links = random_songs['id'].head(35).tolist()
-
-        return JsonResponse({'song_links': song_links})
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    return JsonResponse({'song_links': song_links})

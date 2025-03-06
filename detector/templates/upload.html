@@ -5,21 +5,175 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Image</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles-imp.css' %}">
 </head>
 <body>
-    <div class="container">
-        <h1>Upload an Image for Emotion Detection</h1>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="navbar-brand">EmoMusic</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#image-detection">Image Detection</a></li>
+            <li><a href="#live-detection">Live Detection</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Sections -->
+    <section id="home">
+        <div class="container left"></div>
+        <div class="right-section">
+    <h1 id="animated-text"></h1>
+</div>
+
+    </section>
+
+<section id="image-detection">
+<div class="image-text-container">
+    <h2 id="image-detection-text"></h2>
+</div>
+
+    <div class="container right">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="file" name="image" accept="image/*" required>
-            <button type="submit">Upload</button>
+            <div class="upload-box">
+                <label for="file-upload" class="custom-file-upload">
+                    Choose File
+                    <input id="file-upload" type="file" name="image" accept="image/*" required>
+                </label>
+                <button type="submit">Upload</button>
+            </div>
         </form>
-        <br>
-        <h2>Or use Live Emotion Detection</h2>
-        <a href="{% url 'live_emotion_detection' %}">
-            <button>Start Live Detection</button>
-        </a>
     </div>
+   </section>
+
+
+    <section id="live-detection">
+
+        <div class="container left">
+<a href="{% url 'live_emotion_detection' %}">
+            <button>Start Live Detection</button>
+        </a></div>
+    <div id="right-section-imp">
+    <h2 id="animated-text-imp"></h2>
+</div>
+    </section>
+
+    <section id="about">
+              <div class="image-text-container-imp">
+    <h2 id="image-detection-text-imp"></h2>
+</div>
+        <div class="container right"></div>
+            </section>
+
+    <!-- Floating Record -->
+    <img src="{% static 'retro.png' %}" id="record" alt="Spinning Record">
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    let text = "Real-time Emotion Detection – Just smile, and let the rhythm follow!";
+    let index = 0;
+    let speed = 100; // Typing speed (adjust as needed)
+    let animatedText1 = document.getElementById("animated-text-imp");
+
+    function typeText() {
+        if (index < text.length) {
+            animatedText1.innerHTML = text.substring(0, index + 1);
+            index++;
+            setTimeout(typeText, speed);
+        }
+    }
+
+    typeText();
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let imageText = "Welcome to our platform! We provide intelligent solutions for music recommendations based on emotions.";
+    let index = 0;
+    let speed = 100; // Typing speed (adjust as needed)
+    let textElement = document.getElementById("image-detection-text-imp");
+
+    function typeEffect() {
+        if (index < imageText.length) {
+            textElement.innerHTML = imageText.substring(0, index + 1);
+            index++;
+            setTimeout(typeEffect, speed);
+        }
+    }
+
+    typeEffect();
+});
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let imageText = "Upload an image and let the music match your mood!";
+    let index = 0;
+    let speed = 100; // Typing speed (adjust as needed)
+    let textElement = document.getElementById("image-detection-text");
+
+    function typeEffect() {
+        if (index < imageText.length) {
+            textElement.innerHTML = imageText.substring(0, index + 1);
+            index++;
+            setTimeout(typeEffect, speed);
+        }
+    }
+
+    typeEffect();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    let text = "Welcome to Emotion-Based Music Recommendation System";
+    let index = 0;
+    let speed = 100; // Typing speed (adjust as needed)
+    let animatedText = document.getElementById("animated-text");
+
+    function typeText() {
+        if (index < text.length) {
+            animatedText.innerHTML = text.substring(0, index + 1);
+            index++;
+            setTimeout(typeText, speed);
+        }
+    }
+
+    typeText();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const record = document.getElementById("record");
+    const sections = document.querySelectorAll("section");
+
+    window.addEventListener("scroll", function () {
+        let scrollPosition = window.scrollY + window.innerHeight / 2;
+
+        sections.forEach((section, index) => {
+            let sectionTop = section.offsetTop;
+            let sectionHeight = section.offsetHeight;
+
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                // Determine if the container is on the left or right
+                const container = section.querySelector(".container");
+                if (container) {
+                    const isLeft = container.classList.contains("left");
+                    // Move the record to the middle of the left or right half
+                    record.style.left = isLeft ? "25%" : "75%";
+                }
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>
