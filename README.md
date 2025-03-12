@@ -31,9 +31,9 @@ click ctrl+c in cmd
 
 ### Machine Learning Model
 
-Created ML model using ESSENTIALS\EMOTION DETECTION MODELS\fervi-notebook.ipynb this file.
+Created ML model using ESSENTIALS\EMOTION DETECTION MODELS\original-model-with-fer-2013-dataset.ipynb this file.
 
-This model leverages a Convolutional Neural Network (CNN) architecture, specifically trained on the FER2013 and CK+ datasets. The model is capable of detecting various facial emotions such as happiness, sadness, surprise, anger, etc. After training and fine-tuning, the model achieved an impressive accuracy of 82%. This high accuracy ensures that the system can reliably predict emotions from facial expressions, forming the core of the emotion-based music recommendation system.
+This model leverages a Convolutional Neural Network (CNN) architecture, specifically trained on the FER2013 and CK+ datasets. The model is capable of detecting various facial emotions such as happiness, sadness, surprise, anger, etc. After training and fine-tuning, the model achieved an impressive accuracy of 98%. This high accuracy ensures that the system can reliably predict emotions from facial expressions, forming the core of the emotion-based music recommendation system.
 
 ## And the model has reached an accuracy of 82 percent
 
