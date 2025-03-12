@@ -16,13 +16,13 @@ music_df = pd.read_csv(settings.CSV)
 
 # Emotion to music mapping
 emotion_mapping = {
-    'happy': 'Happy',
-    'sad': 'Sad',
-    'angry': 'Angry',
-    'fear': 'Fear',
-    'surprise': 'Surprised',
-    'neutral': 'Neutral',
-    'disgust': 'Disgust',
+    'happy': 'Energetic',
+    'sad': 'Cheerful',
+    'angry': 'Calm',
+    'fear': 'Calm',
+    'surprise': 'Chillful',
+    'neutral': 'Chillful',
+    'disgust': 'Energetic',
 }
 
 # Preprocessing function to detect faces
@@ -83,11 +83,11 @@ def upload_image(request):
         if img is None:
             # If no faces are detected, return Chill music and an appropriate message
             pred_label = 'neutral'  # Default emotion if no face is detected
-            music_label = 'Happy'   # Default label for Chill music
+            music_label = 'Energetic'   # Default label for Chill music
             filtered_songs = music_df[music_df['label'] == music_label]
 
             # Shuffle the filtered songs and select the top 35 random songs
-            random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+            random_songs = filtered_songs.sample(n=10)  # This will give a different random sample every time
 
 
             song_links = random_songs['id'].tolist()  # Get the song links from the random selection
@@ -103,11 +103,11 @@ def upload_image(request):
         pred = model.predict(img)
         
         pred_label = label[pred.argmax()]
-        music_label = emotion_mapping.get(pred_label, 'Happy')
+        music_label = emotion_mapping.get(pred_label, 'Energetic')
         filtered_songs = music_df[music_df['label'] == music_label]
-        random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+        random_songs = filtered_songs.sample(n=10)  # This will give a different random sample every time
 
-        song_links = random_songs['id'].head(35).tolist()  # Limit to the first 35 songs
+        song_links = random_songs['id'].head(10).tolist()  # Limit to the first 35 songs
         
         return render(request, 'result.html', {
             'emotion': pred_label,
@@ -144,15 +144,15 @@ def detect_emotion(request):
         if img is None:
             # If no faces are detected, return default Chill music and no emotion
             pred_label = 'neutral'
-            music_label = 'Happy'
+            music_label = 'Energetic'
 
             filtered_songs = music_df[music_df['label'] == music_label]
             if filtered_songs.empty:
                 return JsonResponse({'error': 'No songs found for the detected emotion'}, status=404)
 
-            random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+            random_songs = filtered_songs.sample(n=10)  # This will give a different random sample every time
 
-            song_links = random_songs['id'].head(35).tolist()  # Limit to the first 35 songs
+            song_links = random_songs['id'].head(10).tolist()  # Limit to the first 35 songs
 
             return JsonResponse({'emotion': 'No faces detected', 'song_links': song_links})
         
@@ -160,15 +160,15 @@ def detect_emotion(request):
         pred = model.predict(img)
         pred_label = label[pred.argmax()]
         
-        music_label = emotion_mapping.get(pred_label, 'Happy')
+        music_label = emotion_mapping.get(pred_label, 'Energetic')
 
         filtered_songs = music_df[music_df['label'] == music_label]
         if filtered_songs.empty:
             return JsonResponse({'error': 'No songs found for the detected emotion'}, status=404)
 
-        random_songs = filtered_songs.sample(n=35)  # This will give a different random sample every time
+        random_songs = filtered_songs.sample(n=10)  # This will give a different random sample every time
 
-        song_links = random_songs['id'].head(35).tolist()  # Limit to the first 35 songs
+        song_links = random_songs['id'].head(10).tolist()  # Limit to the first 35 songs
 
         return JsonResponse({'emotion': pred_label, 'song_links': song_links})
 
@@ -177,19 +177,31 @@ def detect_emotion(request):
 # Filter songs by language
 from django.http import JsonResponse
 
+from django.http import JsonResponse
+import pandas as pd
+
 def filter_songs(request):
     language = request.GET.get('language', 'all')
-    
+    mood = request.GET.get('mood', '')  # Get the mood from request
+
+    # Filter songs based on language
     if language == 'all':
         filtered_songs = music_df[music_df['language'].str.lower().isin(['telugu', 'english', 'tamil'])]
-
     else:
         filtered_songs = music_df[music_df['language'].str.lower() == language.lower()]
-    
+
+    temp=emotion_mapping[mood]
+    if temp:
+        filtered_songs = filtered_songs[filtered_songs['label'].str.lower() == temp.lower()]
+
+    # If no songs match, return an empty list
     if filtered_songs.empty:
         return JsonResponse({'song_links': []})
 
-    random_songs = filtered_songs.sample(n=10)  # Adjust number as needed
-    song_links = random_songs['id'].tolist()
+    # Randomly select 10 songs
+    filtered_songs = filtered_songs.sort_values(by=['name'], ascending=True)  # Sort alphabetically
 
+    # Select the first 10 songs (or fewer if there aren't enough)
+    song_links = filtered_songs['id'].head(10).tolist()
     return JsonResponse({'song_links': song_links})
+

@@ -1,0 +1,48 @@
+id,name,danceability,acousticness,energy,instrumentalness,liveness,valence,loudness,speechiness,tempo,key,time_signature,Cluster,label,language
+50s6uX9YwwF7T1VOFDNpGA,Dont Stop,0.834,0.215,0.943,0.00385,0.127,0.667,-3.842,0.0757,104.961,7,4,4,Cheerful,telugu
+0BFQi3erN3X4tT6ZrthC5d,Chal Chalo Chalo,0.598,0.42,0.817,0.00121,0.485,0.722,-5.003,0.0991,67.111,9,4,4,Cheerful,telugu
+67RKXc29tGIKnVY2xIBcSU,Adaraku,0.736,0.109,0.659,0.00102,0.0634,0.377,-9.567,0.074,101.012,9,4,2,Cheerful,telugu
+24SGHHcIqQHgO4oucXxhhd,Nuvve Samastham,0.86,0.332,0.726,0.000306,0.0911,0.75,-6.239,0.0502,116.973,8,4,4,Cheerful,telugu
+540QlWSvpDzDOc0EMzUokz,Oke Oka Jeevitham,0.64,0.548,0.501,0,0.135,0.409,-8.195,0.0364,84.975,3,4,2,Cheerful,telugu
+4WgrhMG0WomCrDQ2SDUbKh,Who R U,0.707,0.0572,0.948,0.0538,0.879,0.78,-3.907,0.0722,138.035,7,4,4,Cheerful,telugu
+5hCPyBJTeFoMj5B9RhlxoY,Prayathname,0.667,0.396,0.606,1.78E-05,0.168,0.289,-9.087,0.0509,96.062,9,4,2,Cheerful,telugu
+5tc5uPw6UqvC0N2fF5jzXI,Jaago,0.43,0.552,0.303,0.0984,0.298,0.0398,-13.12,0.0665,129.898,5,4,6,Cheerful,telugu
+6TZEl5bAbJ0zqXKkS2nwxN,Nippulanti Nirudyogi,0.515,0.15,0.914,0,0.348,0.783,-6.612,0.102,89.982,5,4,4,Cheerful,telugu
+30nBtzzMdm8EXQK9QtiJVX,Roopaay,0.726,0.28,0.522,0,0.0698,0.614,-6.611,0.0348,83.007,5,4,2,Cheerful,telugu
+0i5KYCaQs1xY7z9MWCFoXW,Life Of Ram,0.661,0.21,0.559,0.000118,0.116,0.388,-8.829,0.0508,90.009,4,4,2,Cheerful,telugu
+7dMa0vWk26ddwBLkEw1oNz,Travelling Soldier,0.752,0.121,0.91,3.23E-06,0.0914,0.536,-5.172,0.0263,109.995,9,4,4,Cheerful,telugu
+40UTendM9UUH7Byrkg7cY0,Yekku Tholi Mettu,0.826,0.242,0.815,0.000717,0.124,0.865,-9.211,0.0409,125.016,7,4,4,Cheerful,telugu
+4aIKdnn8WMoKjsQ6gdNM84,Podham,0.757,0.0706,0.724,0.000176,0.131,0.899,-8.382,0.0337,125.024,0,4,4,Cheerful,telugu
+7255Q1PYKuFqRrwBxoNh5A,Yemcheddam,0.781,0.486,0.934,0.059,0.195,0.846,-7.191,0.0539,110,11,4,4,Cheerful,telugu
+0OM8PTgPuADb9DQPentmzK,Hosahore,0.713,0.0124,0.969,0.00029,0.317,0.749,-4.468,0.0718,134.979,11,4,4,Cheerful,telugu
+1VBvgXzwESW9V7DXXGSiwm,Mari Antaga,0.851,0.642,0.532,0.0112,0.149,0.8,-10.078,0.0341,117.027,11,4,0,Cheerful,telugu
+3qWfqpB8KJFxwvbpqbuLCh,Ramuloo Ramulaa,0.663,0.415,0.913,0.000496,0.158,0.805,-4.681,0.152,187.552,5,3,6,Energetic,telugu
+0ojsESqwsWoljEuvYKvz3S,Tillu Anna DJ Pedithe,0.702,0.149,0.663,2.01E-06,0.11,0.28,-5.444,0.21,140.027,10,4,2,Energetic,telugu
+3WTHnUPLqVZXSw54PFLtiL,Super Machi,0.759,0.431,0.948,0.0334,0.0288,0.914,-4.313,0.098,97.906,7,4,4,Energetic,telugu
+0FSrCEox8bEpO3RD6ZfEr5,Top Lesi Poddi,0.64,0.104,0.938,0.000116,0.119,0.898,-3.423,0.185,82.874,0,4,4,Energetic,telugu
+1Nh7gea2bnOt9i3HQI1JCB,"Massu Maranam - From ""Petta (Telugu)""",0.468,0.415,0.866,2.15E-06,0.652,0.732,-5.857,0.384,83.787,10,4,3,Energetic,telugu
+5TTOfrbiEJslfTRnLFGJXV,Rechipodham,0.787,0.293,0.896,7.65E-05,0.0413,0.961,-6.781,0.0749,93.965,1,4,4,Energetic,telugu
+4GsRour6Kmw3bHwezz6AVZ,Chaila Chaila,0.867,0.453,0.662,2.53E-05,0.0755,0.649,-8.334,0.179,100.008,2,4,0,Energetic,telugu
+5rYuH1gY2lRBeotu5ejfR4,Ramana Aei,0.693,0.302,0.885,5.30E-06,0.106,0.726,-4.039,0.153,145.14,8,4,4,Energetic,telugu
+534iKGEDubP2xHxZECgzJy,Dum Masala,0.779,0.473,0.884,4.97E-05,0.219,0.82,-7.333,0.0696,98.974,8,4,4,Energetic,telugu
+3loxUguzZoOpPOieFEmTy1,Temper,0.848,0.106,0.813,0.00161,0.0539,0.689,-8.231,0.114,131.003,5,4,4,Energetic,telugu
+4rc1WGmRJ2CsHXTmrBu3gH,Monna Kanipinchavu,0.711,0.304,0.587,0,0.0693,0.584,-7.383,0.223,96.921,6,4,3,Calm,telugu
+2FPYJZygSLhD9RdPvEnBha,Nee Choopule,0.573,0.262,0.35,1.75E-05,0.0976,0.0386,-8.126,0.026,90.925,2,4,2,Calm,telugu
+7qwlnOQ5tIZ9NHVuTjxdMA,Gurthukostunnayi,0.66,0.717,0.432,7.41E-05,0.114,0.341,-7.901,0.0303,139.858,0,4,1,Calm,telugu
+7hNgK7f6Xbckzg7whl5vib,Gore Gore,0.791,0.0998,0.728,0.0267,0.073,0.846,-5.935,0.0518,92.019,8,4,4,Calm,telugu
+6UAtLcNfFYSPTbNYaqHiMz,Gala Gala Paruthunna,0.697,0.52,0.756,9.18E-06,0.123,0.586,-5.02,0.089,101.021,9,4,0,Calm,telugu
+261cGiBtDiWvciVTch0ab1,Muvvala Navakala,0.713,0.301,0.594,5.96E-06,0.0583,0.701,-9.187,0.231,150.164,2,3,6,Calm,telugu
+0pCXbJ3lbtinCZnwg1CYDC,Leharaayi,0.78,0.245,0.608,4.14E-05,0.0947,0.476,-7.62,0.061,91.975,0,4,2,Calm,telugu
+1SbK7OHdqsTUfzPVKylwND,Arere Yekkada,0.789,0.535,0.789,0.00872,0.302,0.889,-5.631,0.0463,102.055,0,4,4,Calm,telugu
+4B28C4WnkayJFo8JYVBO5j,Nuvvu Nuvvu,0.806,0.396,0.496,2.31E-05,0.0881,0.812,-8.548,0.0356,94.994,1,4,0,Calm,telugu
+3jCrVZOua2khYydUAxjuY4,Chinni Chinni Aasalu,0.718,0.601,0.6,9.01E-05,0.232,0.642,-6.733,0.0575,90.013,9,4,0,Calm,telugu
+2IpwvBkE1not2UVDAhYcjA,Come to the Party,0.697,0.248,0.861,4.32E-05,0.347,0.774,-4.998,0.243,169.904,9,4,6,Chillful,telugu
+2kFaEZJM9coKfesI5LOaPJ,Neethoney Dance,0.811,0.113,0.962,0,0.4,0.876,-2.719,0.0484,119.973,2,4,4,Chillful,telugu
+4jy2ORlpTbFqI07KO3LgWI,Ammadu Let's Do Kummudu,0.537,0.0917,0.952,0.0526,0.066,0.773,-4.92,0.101,95.017,9,4,4,Chillful,telugu
+5VayHAvzwBx4i87c1twFjS,Seeti Maar,0.794,0.00364,0.894,0.0113,0.139,0.547,-2.476,0.0411,124.97,10,4,4,Chillful,telugu
+1D8dEFWzWPCs9kk2BaWDGS,Mama Ek Peg La,0.961,0.294,0.812,1.04E-05,0.904,0.59,-4.761,0.207,121.979,1,4,4,Chillful,telugu
+7IoZooXmlXSEVsttiDrGmr,"Jaragandi (From ""Game Changer"") (Telugu)",0.636,0.744,0.902,2.24E-05,0.175,0.744,-5.653,0.137,93.052,5,4,0,Chillful,telugu
+55lcV76gPJUqAnHj3Z9xRd,Private Party,0.715,0.559,0.935,0.00344,0.138,0.904,-5.656,0.0384,127.993,8,4,4,Chillful,telugu
+16GOMnzXpsSRviKHmAdgJE,24/7 Party,0.799,0.0902,0.876,0,0.308,0.745,-6.469,0.206,127.945,2,4,4,Chillful,telugu
+0FS7yDVvXCFosGbpQW9OXY,Boss Party,0.897,0.0395,0.816,0.000549,0.26,0.637,-5.357,0.239,143.913,7,4,4,Chillful,telugu
+15tCasit297c9SsbU3R95d,"Mind Block (From ""Sarileru Neekevvaru"")",0.922,0.645,0.921,0.00536,0.0972,0.73,-5.026,0.216,101.986,7,4,4,Chillful,telugu

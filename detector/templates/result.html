@@ -51,15 +51,15 @@
         $(document).ready(function() {
             $('#language-filter').on('change', function() {
                 const selectedLanguage = $(this).val();
-
+                const detectedEmotion = "{{ emotion }}"; // Pass emotion from Django context
+    
                 // Make an AJAX request to filter songs
                 $.ajax({
-                    url: "{% url 'filter_songs' %}",  // URL of the filtering function
-                    data: { language: selectedLanguage },
+                    url: "{% url 'filter_songs' %}",  
+                    data: { language: selectedLanguage, mood: detectedEmotion },  // Send both language and mood
                     success: function(response) {
-                        // Clear the current song list
-                        $('#song-list').empty();
-
+                        $('#song-list').empty(); // Clear the current song list
+    
                         // Append the filtered songs
                         response.song_links.forEach(function(songId) {
                             $('#song-list').append(`
@@ -82,5 +82,6 @@
             });
         });
     </script>
+    
 </body>
 </html>
