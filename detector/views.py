@@ -60,7 +60,11 @@ def preprocess_image(image_path):
         preprocessed_faces.append(input_image)
 
     return preprocessed_faces[0]
+def set_emotion(request, pred_label):
+    request.session['detected_emotion'] = pred_label
 
+def get_emotion(request):
+    return request.session.get('detected_emotion', 'neutral')
 
 def upload_image(request):
     if request.method == 'POST' and request.FILES['image']:
@@ -103,6 +107,7 @@ def upload_image(request):
         pred = model.predict(img)
         
         pred_label = label[pred.argmax()]
+        set_emotion(request, pred_label)
         music_label = emotion_mapping.get(pred_label, 'Energetic')
         filtered_songs = music_df[music_df['label'] == music_label]
         random_songs = filtered_songs.sample(n=10)  # This will give a different random sample every time
@@ -159,7 +164,7 @@ def detect_emotion(request):
         # Predict emotion if faces are detected
         pred = model.predict(img)
         pred_label = label[pred.argmax()]
-        
+        set_emotion(request, pred_label)
         music_label = emotion_mapping.get(pred_label, 'Energetic')
 
         filtered_songs = music_df[music_df['label'] == music_label]
@@ -182,7 +187,10 @@ import pandas as pd
 
 def filter_songs(request):
     language = request.GET.get('language', 'all')
-    mood = request.GET.get('mood', '')  # Get the mood from request
+
+    # Get the detected emotion using the helper function
+    detected_emotion = get_emotion(request)
+    music_label = emotion_mapping.get(detected_emotion, 'Energetic')  # Default to 'Energetic' if not found
 
     # Filter songs based on language
     if language == 'all':
@@ -190,18 +198,17 @@ def filter_songs(request):
     else:
         filtered_songs = music_df[music_df['language'].str.lower() == language.lower()]
 
-    temp=emotion_mapping[mood]
-    if temp:
-        filtered_songs = filtered_songs[filtered_songs['label'].str.lower() == temp.lower()]
+    # Filter songs based on detected emotion (mood)
+    filtered_songs = filtered_songs[filtered_songs['label'].str.lower() == music_label.lower()]
 
     # If no songs match, return an empty list
     if filtered_songs.empty:
         return JsonResponse({'song_links': []})
 
-    # Randomly select 10 songs
-    filtered_songs = filtered_songs.sort_values(by=['name'], ascending=True)  # Sort alphabetically
+    # Sort songs alphabetically
+    filtered_songs = filtered_songs.sort_values(by=['name'], ascending=True)
 
     # Select the first 10 songs (or fewer if there aren't enough)
     song_links = filtered_songs['id'].head(10).tolist()
-    return JsonResponse({'song_links': song_links})
 
+    return JsonResponse({'song_links': song_links})
