@@ -75,6 +75,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'emotion_based_music.wsgi.application'
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://emotion-based-music-ulk8.onrender.com',
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
